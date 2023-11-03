@@ -115,4 +115,3 @@ public class PositionalLinkedList<E> implements PositionalList<E> {
         return node.element;
     }
 }
-
