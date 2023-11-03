@@ -1,18 +1,156 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+/**
+ * A program that allows users to perform various operations on a positional list of integers.
+ */
 public class Main {
     public static void main(String[] args) {
-        // Create a positional list
-        PositionalList<String> positionalList = new PositionalLinkedList<>();
+        PositionalList<Integer> positionalList = new PositionalLinkedList<>();
 
-        // Add elements to the list
-        Position<String> first = positionalList.addFirst("A");
-        Position<String> second = positionalList.addAfter(first, "B");
-        Position<String> third = positionalList.addAfter(second, "C");
+        // Predefine a list of integers
+        positionalList.addLast(10);
+        positionalList.addLast(20);
+        positionalList.addLast(30);
 
-        // Iterate through the list using the PositionalListIterator
-        PositionalListIterator<String> iterator = new PositionalListIterator<>(positionalList);
-        while (iterator.hasNext()) {
-            Position<String> position = iterator.next();
-            System.out.println(position.getElement());
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nChoose an operation:");
+            System.out.println("1. Add integer at the beginning");
+            System.out.println("2. Add integer at the end");
+            System.out.println("3. Add integer before a position");
+            System.out.println("4. Add integer after a position");
+            System.out.println("5. Remove integer at a position");
+            System.out.println("6. Set integer at a position");
+            System.out.println("7. Display integers");
+            System.out.println("8. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice;
+            try {
+                choice = sc.nextInt();
+                sc.nextLine(); // Consume the newline character
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer choice.");
+                sc.nextLine(); // Consume the invalid input
+                continue; // Continue the loop
+            }
+
+            try {
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter an integer to add at the beginning: ");
+                        int integerToAddAtBeginning = sc.nextInt();
+                        positionalList.addFirst(integerToAddAtBeginning);
+                        System.out.println("Integer added at the beginning.");
+                        break;
+
+                    case 2:
+                        System.out.print("Enter an integer to add at the end: ");
+                        int integerToAddAtEnd = sc.nextInt();
+                        positionalList.addLast(integerToAddAtEnd);
+                        System.out.println("Integer added at the end.");
+                        break;
+
+                    case 3:
+                        System.out.print("Enter an integer to add: ");
+                        int integerToAdd = sc.nextInt();
+                        System.out.print("Enter the position before which to add the integer: ");
+                        int positionIndex = sc.nextInt();
+
+                        // Check if the position index is within bounds
+                        if (positionIndex < 0 || positionIndex > positionalList.size()) {
+                            System.out.println("Invalid position index. Please try again.");
+                            break;
+                        }
+
+                        Position<Integer> positionBefore = positionalList.first();
+                        for (int i = 0; i < positionIndex; i++) {
+                            positionBefore = positionalList.after(positionBefore);
+                        }
+                        positionalList.addBefore(positionBefore, integerToAdd);
+                        System.out.println("Integer added before the specified position.");
+                        break;
+
+                    case 4:
+                        System.out.print("Enter an integer to add: ");
+                        int integerToAddAfter = sc.nextInt();
+                        System.out.print("Enter the position after which to add the integer: ");
+                        int positionIndexAfter = sc.nextInt();
+
+                        // Check if the position index is within bounds
+                        if (positionIndexAfter < 0 || positionIndexAfter > positionalList.size()) {
+                            System.out.println("Invalid position index. Please try again.");
+                            break;
+                        }
+
+                        Position<Integer> positionAfter = positionalList.first();
+                        for (int i = 0; i < positionIndexAfter; i++) {
+                            positionAfter = positionalList.after(positionAfter);
+                        }
+                        positionalList.addAfter(positionAfter, integerToAddAfter);
+                        System.out.println("Integer added after the specified position.");
+                        break;
+
+                    case 5:
+                        if (positionalList.isEmpty()) {
+                            System.out.println("The list is empty. Cannot remove an element.");
+                            break;
+                        }
+
+                        System.out.print("Enter the position to remove: ");
+                        int positionToRemoveIndex = sc.nextInt();
+
+                        // Check if the position index is within bounds
+                        if (positionToRemoveIndex < 0 || positionToRemoveIndex >= positionalList.size()) {
+                            System.out.println("Invalid position index. Please try again.");
+                            break;
+                        }
+
+                        Position<Integer> positionToRemove = positionalList.first();
+                        for (int i = 0; i < positionToRemoveIndex; i++) {
+                            positionToRemove = positionalList.after(positionToRemove);
+                        }
+                        int removedInteger = positionalList.remove(positionToRemove);
+                        System.out.println("Removed integer: " + removedInteger);
+                        break;
+
+                    case 6:
+                        System.out.print("Enter the position to set the integer: ");
+                        int positionToSetIndex = sc.nextInt();
+                        Position<Integer> positionToSet = positionalList.first();
+                        for (int i = 0; i < positionToSetIndex; i++) {
+                            positionToSet = positionalList.after(positionToSet);
+                        }
+                        System.out.print("Enter the new integer: ");
+                        int newInteger = sc.nextInt();
+                        int oldInteger = positionalList.set(positionToSet, newInteger);
+                        System.out.println("Set integer at the specified position. Old integer: " + oldInteger);
+                        break;
+
+                    case 7:
+                        System.out.println("Integers in the list:");
+                        PositionalListIterator<Integer> iterator = new PositionalListIterator<>(positionalList);
+                        while (iterator.hasNext()) {
+                            Position<Integer> position = iterator.next();
+                            System.out.println(position.getElement());
+                        }
+                        break;
+
+                    case 8:
+                        System.out.println("Exiting the program.");
+                        sc.close();
+                        System.exit(0);
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+            }
         }
     }
 }
+
