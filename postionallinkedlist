@@ -1,0 +1,118 @@
+public class PositionalLinkedList<E> implements PositionalList<E> {
+    private static class Node<E> implements Position<E> {
+        private E element;
+        private Node<E> prev;
+        private Node<E> next;
+
+        public Node(E element, Node<E> prev, Node<E> next) {
+            this.element = element;
+            this.prev = prev;
+            this.next = next;
+        }
+
+        public E getElement() throws IllegalStateException {
+            if (next == null) {
+                throw new IllegalStateException("Position no longer valid.");
+            }
+            return element;
+        }
+    }
+
+    private Node<E> header;
+    private Node<E> trailer;
+    private int size = 0;
+
+    public PositionalLinkedList() {
+        header = new Node<>(null, null, null);
+        trailer = new Node<>(null, header, null);
+        header.next = trailer;
+    }
+
+    private Position<E> validate(Position<E> p) throws IllegalArgumentException {
+        if (!(p instanceof Node)) {
+            throw new IllegalArgumentException("Invalid position");
+        }
+        Node<E> node = (Node<E>) p;
+        if (node.next == null) {
+            throw new IllegalArgumentException("Position no longer in the list");
+        }
+        return p;
+    }
+
+    private Position<E> addBetween(E e, Node<E> pred, Node<E> succ) {
+        Node<E> newNode = new Node<>(e, pred, succ);
+        pred.next = newNode;
+        succ.prev = newNode;
+        size++;
+        return newNode;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public Position<E> first() {
+        if (isEmpty()) {
+            return null;
+        }
+        return header.next;
+    }
+
+    public Position<E> last() {
+        if (isEmpty()) {
+            return null;
+        }
+        return trailer.prev;
+    }
+
+    public Position<E> before(Position<E> p) throws IllegalArgumentException {
+        Node<E> node = (Node<E>) validate(p);
+        return node.prev;
+    }
+
+    public Position<E> after(Position<E> p) throws IllegalArgumentException {
+        Node<E> node = (Node<E>) validate(p);
+        return node.next;
+    }
+
+    public Position<E> addFirst(E e) {
+        return addBetween(e, header, header.next);
+    }
+
+    public Position<E> addLast(E e) {
+        return addBetween(e, trailer.prev, trailer);
+    }
+
+    public Position<E> addBefore(Position<E> p, E e) throws IllegalArgumentException {
+        Node<E> node = (Node<E>) validate(p);
+        return addBetween(e, node.prev, node);
+    }
+
+    public Position<E> addAfter(Position<E> p, E e) throws IllegalArgumentException {
+        Node<E> node = (Node<E>) validate(p);
+        return addBetween(e, node, node.next);
+    }
+
+    public E set(Position<E> p, E e) throws IllegalArgumentException {
+        Node<E> node = (Node<E>) validate(p);
+        E oldElement = node.element;
+        node.element = e;
+        return oldElement;
+    }
+
+    public E remove(Position<E> p) throws IllegalArgumentException {
+        Node<E> node = (Node<E>) validate(p);
+        Node<E> pred = node.prev;
+        Node<E> succ = node.next;
+        pred.next = succ;
+        succ.prev = pred;
+        size--;
+        node.prev = node.next = node = null;
+        return node.element;
+    }
+}
+
