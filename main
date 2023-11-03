@@ -1,0 +1,18 @@
+public class Main {
+    public static void main(String[] args) {
+        // Create a positional list
+        PositionalList<String> positionalList = new PositionalLinkedList<>();
+
+        // Add elements to the list
+        Position<String> first = positionalList.addFirst("A");
+        Position<String> second = positionalList.addAfter(first, "B");
+        Position<String> third = positionalList.addAfter(second, "C");
+
+        // Iterate through the list using the PositionalListIterator
+        PositionalListIterator<String> iterator = new PositionalListIterator<>(positionalList);
+        while (iterator.hasNext()) {
+            Position<String> position = iterator.next();
+            System.out.println(position.getElement());
+        }
+    }
+}
