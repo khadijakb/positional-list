@@ -1,0 +1,26 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class PositionalListIterator<E> implements Iterator<Position<E>> {
+    private PositionalList<E> list;
+    private Position<E> current;
+
+    public PositionalListIterator(PositionalList<E> list) {
+        this.list = list;
+        current = list.isEmpty() ? null : list.first();
+    }
+
+    public boolean hasNext() {
+        return current != null;
+    }
+
+    public Position<E> next() {
+        if (current == null) {
+            throw new NoSuchElementException("No more elements in the list.");
+        }
+        Position<E> position = current;
+        current = (current == list.last()) ? null : list.after(current);
+        return position;
+    }
+}
+
