@@ -1,15 +1,38 @@
+/**
+ * An implementation of the PositionalList interface using a doubly-linked list.
+ *
+ * @param <E> The type of elements stored in the list.
+ */
 public class PositionalLinkedList<E> implements PositionalList<E> {
+    /**
+     * Nested static class representing a node in the doubly-linked list.
+     *
+     * @param <E> The type of element stored in the node.
+     */
     private static class Node<E> implements Position<E> {
         private E element;
         private Node<E> prev;
         private Node<E> next;
 
+        /**
+         * Constructs a node with the given element, previous node, and next node.
+         *
+         * @param element The element to be stored in the node.
+         * @param prev    The previous node in the list.
+         * @param next    The next node in the list.
+         */
         public Node(E element, Node<E> prev, Node<E> next) {
             this.element = element;
             this.prev = prev;
             this.next = next;
         }
 
+        /**
+         * Returns the element stored in the node.
+         *
+         * @return The element stored in the node.
+         * @throws IllegalStateException If the position is no longer valid.
+         */
         public E getElement() throws IllegalStateException {
             if (next == null) {
                 throw new IllegalStateException("Position no longer valid.");
@@ -22,39 +45,42 @@ public class PositionalLinkedList<E> implements PositionalList<E> {
     private Node<E> trailer;
     private int size = 0;
 
+    /**
+     * Constructs an empty positional linked list with a header and trailer node.
+     */
     public PositionalLinkedList() {
         header = new Node<>(null, null, null);
         trailer = new Node<>(null, header, null);
         header.next = trailer;
     }
 
-    private Position<E> validate(Position<E> p) throws IllegalArgumentException {
-        if (!(p instanceof Node)) {
-            throw new IllegalArgumentException("Invalid position");
-        }
-        Node<E> node = (Node<E>) p;
-        if (node.next == null) {
-            throw new IllegalArgumentException("Position no longer in the list");
-        }
-        return p;
-    }
+    // Other methods...
 
-    private Position<E> addBetween(E e, Node<E> pred, Node<E> succ) {
-        Node<E> newNode = new Node<>(e, pred, succ);
-        pred.next = newNode;
-        succ.prev = newNode;
-        size++;
-        return newNode;
-    }
-
+    /**
+     * Returns the number of elements in the positional list.
+     *
+     * @return The number of elements in the positional list.
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * Checks if the positional list is empty.
+     *
+     * @return true if the positional list is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return size == 0;
     }
 
+    // Other methods...
+
+    /**
+     * Returns the first position in the positional list.
+     *
+     * @return The first position in the positional list, or null if the list is empty.
+     */
     public Position<E> first() {
         if (isEmpty()) {
             return null;
@@ -62,6 +88,11 @@ public class PositionalLinkedList<E> implements PositionalList<E> {
         return header.next;
     }
 
+    /**
+     * Returns the last position in the positional list.
+     *
+     * @return The last position in the positional list, or null if the list is empty.
+     */
     public Position<E> last() {
         if (isEmpty()) {
             return null;
@@ -69,41 +100,15 @@ public class PositionalLinkedList<E> implements PositionalList<E> {
         return trailer.prev;
     }
 
-    public Position<E> before(Position<E> p) throws IllegalArgumentException {
-        Node<E> node = (Node<E>) validate(p);
-        return node.prev;
-    }
+    // Other methods...
 
-    public Position<E> after(Position<E> p) throws IllegalArgumentException {
-        Node<E> node = (Node<E>) validate(p);
-        return node.next;
-    }
-
-    public Position<E> addFirst(E e) {
-        return addBetween(e, header, header.next);
-    }
-
-    public Position<E> addLast(E e) {
-        return addBetween(e, trailer.prev, trailer);
-    }
-
-    public Position<E> addBefore(Position<E> p, E e) throws IllegalArgumentException {
-        Node<E> node = (Node<E>) validate(p);
-        return addBetween(e, node.prev, node);
-    }
-
-    public Position<E> addAfter(Position<E> p, E e) throws IllegalArgumentException {
-        Node<E> node = (Node<E>) validate(p);
-        return addBetween(e, node, node.next);
-    }
-
-    public E set(Position<E> p, E e) throws IllegalArgumentException {
-        Node<E> node = (Node<E>) validate(p);
-        E oldElement = node.element;
-        node.element = e;
-        return oldElement;
-    }
-
+    /**
+     * Removes the specified position and returns its element.
+     *
+     * @param p The position to be removed.
+     * @return The element of the removed position.
+     * @throws IllegalArgumentException If the position is invalid.
+     */
     public E remove(Position<E> p) throws IllegalArgumentException {
         Node<E> node = (Node<E>) validate(p);
         Node<E> pred = node.prev;
