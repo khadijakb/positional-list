@@ -1,19 +1,40 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Iterator for traversing the positions of a PositionalList.
+ *
+ * @param <E> The type of elements stored in the positional list.
+ */
 public class PositionalListIterator<E> implements Iterator<Position<E>> {
     private PositionalList<E> list;
     private Position<E> current;
 
+    /**
+     * Constructs an iterator for the given positional list.
+     *
+     * @param list The positional list to be iterated.
+     */
     public PositionalListIterator(PositionalList<E> list) {
         this.list = list;
-        current = list.isEmpty() ? null : list.first();
+        this.current = list.isEmpty() ? null : list.first();
     }
 
+    /**
+     * Checks if there is a next position in the iterator.
+     *
+     * @return true if there is a next position, false otherwise.
+     */
     public boolean hasNext() {
         return current != null;
     }
 
+    /**
+     * Returns the next position in the iterator.
+     *
+     * @return The next position in the iterator.
+     * @throws NoSuchElementException If there are no more elements in the list.
+     */
     public Position<E> next() {
         if (current == null) {
             throw new NoSuchElementException("No more elements in the list.");
