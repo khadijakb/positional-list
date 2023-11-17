@@ -5,6 +5,11 @@ import java.util.Scanner;
  * A program that allows users to perform various operations on a positional list of integers.
  */
 public class Main {
+    /**
+     * The main method to interact with the positional list through a menu-driven console interface.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         PositionalList<Integer> positionalList = new PositionalLinkedList<>();
 
@@ -153,4 +158,3 @@ public class Main {
         }
     }
 }
-
